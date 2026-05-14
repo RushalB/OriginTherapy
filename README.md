@@ -18,7 +18,7 @@ Both commands default to the paths above if no flags are provided.
 - **TypeScript**, Node LTS, ESM
 - **Anthropic Claude Haiku** via `@anthropic-ai/sdk` — two LLM calls per item (classify + draft)
 - **LangGraph** — state graph with typed nodes per routing tier
-- **AJV** — output validated against `schema/output.schema.json`
+
 
 ---
 
