@@ -21,6 +21,13 @@ export type Classification =
 
 export type Urgency = "P0" | "P1" | "P2" | "P3";
 
+export type ClassificationTier =
+  | "risk"        // safeguarding — early exit, escalate immediately
+  | "intake"      // new_referral, missing_paperwork
+  | "patient_ops" // scheduling, existing_patient_request, billing_question
+  | "clinical"    // clinical_question
+  | "dead_end";   // spam, other, unrecognized
+
 export type PolicyTopic =
   | "service_lines"
   | "insurance"

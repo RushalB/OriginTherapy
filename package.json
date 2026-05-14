@@ -4,16 +4,21 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "triage": "tsx src/index.ts",
-    "validate": "tsx src/validate.ts",
+    "triage": "tsx --env-file=.env src/index.ts",
+    "validate": "tsx --env-file=.env src/validate.ts",
     "typecheck": "tsc --noEmit",
     "package": "tar -czf take-home.tgz README.md package.json package-lock.json tsconfig.json .gitignore data/inbox.json data/policies.md data/providers.json data/example_output.json schema/output.schema.json src/agent.ts src/index.ts src/tools.ts src/types.ts src/validate.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.33.1",
+    "@langchain/anthropic": "^1.3.29",
+    "@langchain/core": "^1.1.46",
+    "@langchain/langgraph": "^1.3.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "tsx": "^4.19.2",
-    "ulid": "^2.3.0"
+    "ulid": "^2.3.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
