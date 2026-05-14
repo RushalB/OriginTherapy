@@ -70,9 +70,8 @@ The tier gates routing. A safeguarding item never reaches the intake branch.
 
 **Sequential item processing.** Items run one at a time. A production agent would use `Promise.allSettled` with per-item error isolation so one failure doesn't block the batch.
 
-**Slot preferences not passed to find_slots.** Some items include availability preferences. The held slot is provisional and the intake task instructs staff to confirm — correct human-in-the-loop boundary, but preference-aware filtering would be the next improvement.
+**Slot preferences not passed to find_slots.** The agent finds an open appointment slot but doesn't check if it actually fits the family.
 
-**Bilingual provider not enforced at slot level.** Some items trigger `lookup_policy(language_access)` but `find_slots` does not filter by language. Staff are tasked to confirm a Spanish-speaking SLP before finalizing.
 
 ## With More Time
 
