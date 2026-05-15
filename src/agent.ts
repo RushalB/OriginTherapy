@@ -21,7 +21,17 @@ import {
   getToolCallsForItem,
 } from "./tools.js";
 
+const SPANISH_RE = /evaluacion|hola|gracias|para.*evaluaci/i;
+
 // ── LOOKUP TABLES ────────────────────────────────────────────────────────────
+
+/** Maps Inbox channel types to draft message channel types */
+function mapChannel(channel: Channel): "portal" | "email" | "phone" {
+  if (channel === "fax_referral") return "email";
+  if (channel === "portal_message") return "portal";
+  if (channel === "voicemail_transcript") return "phone";
+  return "email";
+}
 
 /** Maps each Classification to its routing tier */
 export const TIER_MAP: Record<Classification, ClassificationTier> = {
@@ -114,7 +124,7 @@ Constraints:
 - No clinical advice, no diagnosis, no developmental predictions
 - Do NOT imply the message has already been sent
 - Do NOT use phrases like "I have sent" or "you will receive" — this is a draft only
-${item.channel === "voicemail_transcript" && /evaluacion|hola|gracias/i.test(item.body) ? "- Write the reply in Spanish" : ""}
+${item.channel === "voicemail_transcript" && SPANISH_RE.test(item.body) ? "- Write the reply in Spanish" : ""}
 ${classification === "safeguarding" ? "- INTERNAL STAFF USE ONLY. Do not address the family. Neutral language only." : ""}
 ${classification === "clinical_question" ? "- Do not answer the clinical question. Offer a screening appointment as an option, not a recommendation." : ""}
 
@@ -518,7 +528,7 @@ export async function runPatientOpsBranch(
 
   const msg = await draft_message({
     recipient: item.sender,
-    channel: item.channel === "fax_referral" ? "email" : item.channel,
+    channel: mapChannel(item.channel),
     body: draftBody,
   });
 
@@ -550,7 +560,7 @@ export async function runClinicalBranch(
 
   const msg = await draft_message({
     recipient: item.sender,
-    channel: item.channel === "fax_referral" ? "email" : item.channel,
+    channel: mapChannel(item.channel),
     body: draftBody,
   });
 
@@ -594,7 +604,7 @@ export async function runMissingPaperworkBranch(
   // 3. Draft message to referring provider
   const msg = await draft_message({
     recipient: "parent",
-    channel: item.channel === "fax_referral" ? "email" : "email",
+    channel: "email",
     body: "Triage draft: We received a referral but some critical information is missing. Our team will follow up to collect the remaining details.",
   });
 
@@ -661,7 +671,7 @@ export async function runAgent(inbox: InboxItem[]): Promise<ItemOutput[]> {
           if (classification === "missing_paperwork") {
             branch = await runMissingPaperworkBranch(item, extracted);
           } else {
-            const isSpanish = /evaluacion|para.*evaluaci/i.test(item.body);
+            const isSpanish = SPANISH_RE.test(item.body);
             branch = await runIntakeBranch(item, extracted, patientResult, classification, { is_spanish: isSpanish });
           }
           break;
